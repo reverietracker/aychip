@@ -1,0 +1,15 @@
+{
+  "name": "aychip",
+  "version": "1.0.0",
+  "description": "Emulator for the AY-3-8912 sound chip",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --coverage"
+  },
+  "author": "Matt Westcott",
+  "license": "ISC",
+  "devDependencies": {
+    "docpress": "0.8.2",
+    "jest": "^27.3.1"
+  }
+}
