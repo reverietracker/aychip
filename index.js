@@ -185,40 +185,40 @@ class AYChip {
                     this.envelopeAlternatePhase ^= 0x0f;
                 }
 
-                let envelopeValue = (
+                this.envelopeValue = (
                     /* start with the descending ramp counter */
                     this.envelopeRampCounter
                     /* XOR with the 'alternating' bit if on an even-numbered ramp */
                     ^ (this.envelopeAlternatePhase && this.envelopeAlternateMask)
                 );
                 /* OR with the 'hold' bit if past the first ramp */
-                if (!this.envelopeOnFirstRamp) envelopeValue |= this.envelopeHoldMask;
+                if (!this.envelopeOnFirstRamp) this.envelopeValue |= this.envelopeHoldMask;
                 /* XOR with the 'attack' bit */
-                envelopeValue ^= this.envelopeAttackMask;
+                this.envelopeValue ^= this.envelopeAttackMask;
                 /* AND with the 'continue' bit if past the first ramp */
-                if (!this.envelopeOnFirstRamp) envelopeValue &= this.envelopeContinueMask;
+                if (!this.envelopeOnFirstRamp) this.envelopeValue &= this.envelopeContinueMask;
             }
 
             const levelA = this.VOLUME_LEVELS[
-                ((this.registers[8] & 0x10) ? envelopeValue : (this.registers[8] & 0x0f))
+                ((this.registers[8] & 0x10) ? this.envelopeValue : (this.registers[8] & 0x0f))
                 & (this.toneGeneratorAPhase | this.toneChanAMask)
                 & (this.noiseGeneratorPhase | this.noiseChanAMask)
             ];
             const levelB = this.VOLUME_LEVELS[
-                ((this.registers[9] & 0x10) ? envelopeValue : (this.registers[9] & 0x0f))
+                ((this.registers[9] & 0x10) ? this.envelopeValue : (this.registers[9] & 0x0f))
                 & (this.toneGeneratorBPhase | this.toneChanBMask)
                 & (this.noiseGeneratorPhase | this.noiseChanBMask)
             ];
             const levelC = this.VOLUME_LEVELS[
-                ((this.registers[10] & 0x10) ? envelopeValue : (this.registers[10] & 0x0f))
+                ((this.registers[10] & 0x10) ? this.envelopeValue : (this.registers[10] & 0x0f))
                 & (this.toneGeneratorCPhase | this.toneChanCMask)
                 & (this.noiseGeneratorPhase | this.noiseChanCMask)
             ];
 
-            leftChannelData[bufferPos] += (
+            leftChannelData[bufferPos] = (
                 this.panVolumeAdjust[0][0] * levelA + this.panVolumeAdjust[1][0] * levelB + this.panVolumeAdjust[2][0] * levelC
             );
-            rightChannelData[bufferPos] += (
+            rightChannelData[bufferPos] = (
                 this.panVolumeAdjust[0][1] * levelA + this.panVolumeAdjust[1][1] * levelB + this.panVolumeAdjust[2][1] * levelC
             );
         }
